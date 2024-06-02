@@ -1,0 +1,43 @@
+#include <Servo.h>
+
+Servo servoX;
+Servo servoY;
+
+const int ldrPin1 = A0; // LDR 1
+const int ldrPin2 = A1; // LDR 2
+const int ldrPin3 = A2; // LDR 3
+const int ldrPin4 = A3; // LDR 4
+
+void setup() {
+  servoX.attach(9);
+  servoY.attach(10);
+  servoX.write(90); // Initial position
+  servoY.write(90); // Initial position
+}
+
+void loop() {
+  int ldr1 = analogRead(ldrPin1);
+  int ldr2 = analogRead(ldrPin2);
+  int ldr3 = analogRead(ldrPin3);
+  int ldr4 = analogRead(ldrPin4);
+  
+  int avg1 = (ldr1 + ldr2) / 2; // Top sensors
+  int avg2 = (ldr3 + ldr4) / 2; // Bottom sensors
+  
+  if (avg1 > avg2 + 10) {
+    servoX.write(servoX.read() + 1);
+  } else if (avg2 > avg1 + 10) {
+    servoX.write(servoX.read() - 1);
+  }
+
+  int avg3 = (ldr1 + ldr3) / 2; // Left sensors
+  int avg4 = (ldr2 + ldr4) / 2; // Right sensors
+  
+  if (avg3 > avg4 + 10) {
+    servoY.write(servoY.read() + 1);
+  } else if (avg4 > avg3 + 10) {
+    servoY.write(servoY.read() - 1);
+  }
+
+  delay(1000); // Update every second
+}
